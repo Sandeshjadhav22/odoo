@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
+import authRoutes from "./routes/auth.routes.js";
+
 const app = express();
 
 // Middlewares
@@ -14,6 +16,10 @@ app.use(
     credentials: true,
   })
 );
+
+// routes
+app.use("/auth", authRoutes);
+
 
 // Health check
 app.get("/health", (req, res) => {
