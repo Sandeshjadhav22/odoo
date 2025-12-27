@@ -9,6 +9,7 @@ import { requireAuth, restrictTo } from "./middleware/auth.middleware.js";
 import equipmentCategoryRoutes from "./routes/equipmentCategory.routes.js";
 import equipmentRoutes from "./routes/equipment.routes.js";
 import maintenanceRequestRoutes from "./routes/maintenanceRequest.routes.js";
+import workCenterRoutes from "./routes/workCenter.routes.js"
 const app = express();
 
 // Middlewares
@@ -29,25 +30,7 @@ app.use("/users", userRoutes);
 app.use("/api/categories", equipmentCategoryRoutes);
 app.use("/api/equipments", equipmentRoutes);
 app.use("/maintenance-requests", maintenanceRequestRoutes);
-
-// 🔐 Test protected route
-app.get("/protected", requireAuth, (req, res) => {
-  res.json({
-    success: true,
-    user: req.user,
-  });
-});
-
-// 🔐 Admin-only example
-app.get(
-  "/admin",
-  requireAuth,
-  restrictTo("ADMIN"),
-  (req, res) => {
-    res.json({ message: "Welcome Admin" });
-  }
-);
-
+app.use("/api/work-centers", workCenterRoutes);
 
 
 // Health check

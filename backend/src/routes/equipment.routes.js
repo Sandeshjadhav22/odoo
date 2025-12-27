@@ -6,13 +6,15 @@ import {
   updateEquipment,
   deleteEquipment,
 } from "../controllers/equipment.controller.js";
+import { requireAuth, restrictTo } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", createEquipment);
+
+router.post("/", restrictTo("ADMIN", "MANAGER"),createEquipment);
 router.get("/", getEquipments);
 router.get("/:id", getEquipmentById);
-router.put("/:id", updateEquipment);
+router.put("/:id", restrictTo("ADMIN", "MANAGER"),updateEquipment);
 router.delete("/:id", deleteEquipment);
 
 export default router;

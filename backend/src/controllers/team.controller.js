@@ -1,9 +1,6 @@
 import prisma from "../models/prisma.js";
 
-/**
- * Create a new team
- * POST /teams
- */
+
 export const createTeam = async (req, res) => {
   try {
     const { name, company } = req.body;
@@ -30,11 +27,6 @@ export const createTeam = async (req, res) => {
   }
 };
 
-
-/**
- * Get all teams
- * GET /teams
- */
 export const getAllTeams = async (req, res) => {
   try {
     const teams = await prisma.team.findMany({
@@ -55,10 +47,6 @@ export const getAllTeams = async (req, res) => {
   }
 };
 
-/**
- * Assign user to a team
- * PATCH /teams/:teamId/users/:userId
- */
 export const assignUserToTeam = async (req, res) => {
   try {
     const { teamId, userId } = req.params;
@@ -90,11 +78,6 @@ export const assignUserToTeam = async (req, res) => {
   }
 };
 
-
-/**
- * Update team details
- * PATCH /teams/:id
- */
 export const updateTeam = async (req, res) => {
   try {
     const { id } = req.params;
@@ -130,12 +113,6 @@ export const updateTeam = async (req, res) => {
   }
 };
 
-
-
-/**
- * Delete team
- * DELETE /teams/:id
- */
 export const deleteTeam = async (req, res) => {
   try {
     const { id } = req.params;
