@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
 import teamRoutes from "./routes/team.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import { requireAuth, restrictTo } from "./middleware/auth.middleware.js";
 
 const app = express();
@@ -41,6 +42,7 @@ app.get(
 );
 
 app.use("/teams", teamRoutes);
+app.use("/users", userRoutes);
 
 
 // Health check
