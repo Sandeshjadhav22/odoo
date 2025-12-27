@@ -1,9 +1,5 @@
 import prisma from "../models/prisma.js";
 
-/**
- * CREATE Maintenance Request
- * POST /maintenance-requests
- */
 export const createRequest = async (req, res) => {
   try {
     const {
@@ -21,7 +17,7 @@ export const createRequest = async (req, res) => {
       });
     }
 
-    // 1. Fetch equipment (AUTO-FILL LOGIC)
+
     const equipment = await prisma.equipment.findUnique({
       where: { id: Number(equipmentId) },
       include: { category: true },
@@ -31,7 +27,7 @@ export const createRequest = async (req, res) => {
       return res.status(404).json({ message: "Equipment not found" });
     }
 
-    // 2. Create request
+
     const request = await prisma.maintenanceRequest.create({
       data: {
         subject,
@@ -60,10 +56,7 @@ export const createRequest = async (req, res) => {
 };
 
 
-/**
- * GET Maintenance Requests
- * GET /maintenance-requests
- */
+
 export const getRequests = async (req, res) => {
   try {
     const requests = await prisma.maintenanceRequest.findMany({
@@ -86,9 +79,7 @@ export const getRequests = async (req, res) => {
 };
 
 
-/**
- * GET /maintenance-requests/:id
- */
+
 export const getRequestById = async (req, res) => {
   try {
     const request = await prisma.maintenanceRequest.findUnique({
@@ -116,9 +107,7 @@ export const getRequestById = async (req, res) => {
 };
 
 
-/**
- * PATCH /maintenance-requests/:id/stage
- */
+
 export const updateRequestStage = async (req, res) => {
   try {
     const { stage, technicianId, durationHours } = req.body;
@@ -132,7 +121,7 @@ export const updateRequestStage = async (req, res) => {
       return res.status(404).json({ message: "Request not found" });
     }
 
-    // RULES
+
     if (stage === "IN_PROGRESS" && !technicianId) {
       return res.status(400).json({
         message: "Technician must be assigned to start work",

@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../models/prisma.js";
 
-// helper: sign token
+
 const signToken = (user) => {
   return jwt.sign(
     { id: user.id, role: user.role },
@@ -11,7 +11,7 @@ const signToken = (user) => {
   );
 };
 
-// helper: send cookie
+
 const sendToken = (user, res) => {
   const token = signToken(user);
 
@@ -33,7 +33,7 @@ const sendToken = (user, res) => {
   });
 };
 
-// ------------------ SIGNUP ------------------
+
 export const signup = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -68,7 +68,7 @@ export const signup = async (req, res) => {
   }
 };
 
-// ------------------ LOGIN ------------------
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -98,7 +98,7 @@ export const login = async (req, res) => {
   }
 };
 
-// ------------------ LOGOUT ------------------
+
 export const logout = async (req, res) => {
   res.cookie("token", "", {
     httpOnly: true,
