@@ -4,9 +4,11 @@ import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
 import teamRoutes from "./routes/team.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import { requireAuth, restrictTo } from "./middleware/auth.middleware.js";
 import equipmentCategoryRoutes from "./routes/equipmentCategory.routes.js";
 import equipmentRoutes from "./routes/equipment.routes.js";
+import maintenanceRequestRoutes from "./routes/maintenanceRequest.routes.js";
 const app = express();
 
 // Middlewares
@@ -22,8 +24,11 @@ app.use(
 
 // routes
 app.use("/auth", authRoutes);
+app.use("/teams", teamRoutes);
+app.use("/users", userRoutes);
 app.use("/api/categories", equipmentCategoryRoutes);
 app.use("/api/equipments", equipmentRoutes);
+app.use("/maintenance-requests", maintenanceRequestRoutes);
 
 // 🔐 Test protected route
 app.get("/protected", requireAuth, (req, res) => {
@@ -43,7 +48,6 @@ app.get(
   }
 );
 
-app.use("/teams", teamRoutes);
 
 
 // Health check

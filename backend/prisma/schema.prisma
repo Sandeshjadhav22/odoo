@@ -13,12 +13,31 @@ enum Role {
   TECHNICIAN
 }
 
+enum MaintenanceType {
+  CORRECTIVE
+  PREVENTIVE
+}
+
+enum RequestStage {
+  NEW
+  IN_PROGRESS
+  REPAIRED
+  SCRAP
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 model Team {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  company   String
-  users     User[]
-  createdAt DateTime @default(now())
+  id                  String               @id @default(uuid())
+  name                String               @unique
+  company             String
+  users               User[]
+  createdAt           DateTime             @default(now())
+  maintenanceRequests MaintenanceRequest[]
 }
 
 model User {
@@ -30,44 +49,89 @@ model User {
   teamId   String?
   team     Team?   @relation(fields: [teamId], references: [id])
 
+  assignedRequests MaintenanceRequest[] @relation("TechnicianRequests")
+  createdRequests  MaintenanceRequest[] @relation("CreatedRequests")
+
   createdAt DateTime @default(now())
 }
 
 model EquipmentCategory {
-  id          Int       @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   name        String
   responsible String
   company     String
 
-  equipments  Equipment[]
+  equipments Equipment[]
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  maintenanceRequests MaintenanceRequest[]
 }
 
 model Equipment {
-  id              Int       @id @default(autoincrement())
-  name            String
-  serialNumber    String?
+  id           Int     @id @default(autoincrement())
+  name         String
+  serialNumber String?
 
-  company         String
-  usedBy          String        // Employee / Department
-  employee        String?
-  department      String?
+  company    String
+  usedBy     String // Employee / Department
+  employee   String?
+  department String?
 
   technician      String
   maintenanceTeam String?
 
-  assignedDate    DateTime?
-  scrapDate       DateTime?
+  assignedDate DateTime?
+  scrapDate    DateTime?
 
-  location        String?
-  workCenter      String?
-  description     String?
+  location    String?
+  workCenter  String?
+  description String?
 
-  categoryId      Int
-  category        EquipmentCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  category   EquipmentCategory @relation(fields: [categoryId], references: [id])
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  maintenanceRequests MaintenanceRequest[]
+}
+
+model MaintenanceRequest {
+  id String @id @default(uuid())
+
+  subject     String
+  description String?
+
+  // Type & workflow
+  type     MaintenanceType
+  stage    RequestStage    @default(NEW)
+  priority Priority        @default(MEDIUM)
+
+  // Equipment & category
+  equipmentId Int
+  equipment   Equipment @relation(fields: [equipmentId], references: [id])
+
+  categoryId Int
+  category   EquipmentCategory @relation(fields: [categoryId], references: [id])
+
+  // Assignment
+  teamId String?
+  team   Team?   @relation(fields: [teamId], references: [id])
+
+  technicianId String?
+  technician   User?   @relation("TechnicianRequests", fields: [technicianId], references: [id])
+
+  createdById String
+  createdBy   User   @relation("CreatedRequests", fields: [createdById], references: [id])
+
+  // Dates & tracking
+  requestDate   DateTime  @default(now())
+  scheduledDate DateTime?
+  durationHours Float?
+
+  // Company (simple string, as decided)
+  company String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
