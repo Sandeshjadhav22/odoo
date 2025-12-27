@@ -32,3 +32,42 @@ model User {
 
   createdAt DateTime @default(now())
 }
+
+model EquipmentCategory {
+  id          Int       @id @default(autoincrement())
+  name        String
+  responsible String
+  company     String
+
+  equipments  Equipment[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Equipment {
+  id              Int       @id @default(autoincrement())
+  name            String
+  serialNumber    String?
+
+  company         String
+  usedBy          String        // Employee / Department
+  employee        String?
+  department      String?
+
+  technician      String
+  maintenanceTeam String?
+
+  assignedDate    DateTime?
+  scrapDate       DateTime?
+
+  location        String?
+  workCenter      String?
+  description     String?
+
+  categoryId      Int
+  category        EquipmentCategory @relation(fields: [categoryId], references: [id])
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}

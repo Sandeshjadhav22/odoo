@@ -6,7 +6,8 @@ import authRoutes from "./routes/auth.routes.js";
 import teamRoutes from "./routes/team.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import { requireAuth, restrictTo } from "./middleware/auth.middleware.js";
-
+import equipmentCategoryRoutes from "./routes/equipmentCategory.routes.js";
+import equipmentRoutes from "./routes/equipment.routes.js";
 const app = express();
 
 // Middlewares
@@ -22,6 +23,8 @@ app.use(
 
 // routes
 app.use("/auth", authRoutes);
+app.use("/api/categories", equipmentCategoryRoutes);
+app.use("/api/equipments", equipmentRoutes);
 
 // 🔐 Test protected route
 app.get("/protected", requireAuth, (req, res) => {
