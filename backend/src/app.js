@@ -3,6 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
+import teamRoutes from "./routes/team.routes.js";
+import { requireAuth, restrictTo } from "./middleware/auth.middleware.js";
 
 const app = express();
 
@@ -19,6 +21,26 @@ app.use(
 
 // routes
 app.use("/auth", authRoutes);
+
+// 🔐 Test protected route
+app.get("/protected", requireAuth, (req, res) => {
+  res.json({
+    success: true,
+    user: req.user,
+  });
+});
+
+// 🔐 Admin-only example
+app.get(
+  "/admin",
+  requireAuth,
+  restrictTo("ADMIN"),
+  (req, res) => {
+    res.json({ message: "Welcome Admin" });
+  }
+);
+
+app.use("/teams", teamRoutes);
 
 
 // Health check
