@@ -1,43 +1,26 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { getUsers } from "@/lib/portalUserStore";
-import { setLoggedInUser } from "@/lib/auth";
-import { useRouter } from "next/navigation";
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { loginApi } from '@/lib/authApi';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = () => {
-    const users = getUsers();
-    const user = users.find((u) => u.email === email);
+  const handleLogin = async () => {
+    setError('');
 
-    if (!user) {
-      setError("Account not exist");
-      return;
-    }
+    try {
+      await loginApi({ email, password });
 
-    if (user.password !== password) {
-      setError("Invalid Password");
-      return;
-    }
-
-    setError("");
-
-    // store logged-in user
-    setLoggedInUser(user);
-
-    // redirect based on role
-    if (user.role === "admin") {
-      router.push("/dashboard/admin");
-    } else if (user.role === "technician") {
-      router.push("/dashboard/technician");
-    } else if (user.role === "manager") {
-      router.push("/dashboard/manager");
+      // cookie is set → user is authenticated
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Login failed');
     }
   };
 
@@ -70,7 +53,9 @@ export default function LoginPage() {
 
         <div className="flex justify-between text-sm">
           <Link href="/signup">Sign Up</Link>
-          <Link href="/forgot-password">Forgot Password?</Link>
+          <Link href="/forgot-password">
+            Forgot Password?
+          </Link>
         </div>
       </div>
     </div>

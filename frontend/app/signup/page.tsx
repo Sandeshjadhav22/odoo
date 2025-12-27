@@ -2,25 +2,21 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  getUsers,
-  saveUsers,
-  UserRole,
-} from '@/lib/portalUserStore';
 import { isValidPassword } from '@/lib/passwordValidator';
+import { signupApi } from '@/lib/authApi';
 
 export default function SignupPage() {
   const router = useRouter();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState<UserRole>('technician');
+  const [role, setRole] = useState('TECHNICIAN');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] =
     useState('');
   const [error, setError] = useState('');
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     setError('');
 
     if (!name || !email || !password || !confirmPassword) {
@@ -40,22 +36,19 @@ export default function SignupPage() {
       return;
     }
 
-    const users = getUsers();
+    try {
+      await signupApi({
+        name,
+        email,
+        password,
+        role,
+      });
 
-    if (users.find((u) => u.email === email)) {
-      setError('Email already exists');
-      return;
+      // backend sets cookie → user is logged in
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message);
     }
-
-    users.push({
-      name,
-      email,
-      role,
-      password,
-    });
-
-    saveUsers(users);
-    router.push('/login');
   };
 
   return (
@@ -63,7 +56,6 @@ export default function SignupPage() {
       <div className="w-96 border p-6 rounded space-y-4">
         <h2 className="text-xl font-bold">Sign Up</h2>
 
-        {/* Name */}
         <input
           className="w-full border p-2"
           placeholder="Full Name"
@@ -71,7 +63,6 @@ export default function SignupPage() {
           onChange={(e) => setName(e.target.value)}
         />
 
-        {/* Email */}
         <input
           className="w-full border p-2"
           placeholder="Email"
@@ -79,22 +70,18 @@ export default function SignupPage() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        {/* Role */}
         <select
           className="w-full border p-2"
           value={role}
-          onChange={(e) =>
-            setRole(e.target.value as UserRole)
-          }
+          onChange={(e) => setRole(e.target.value)}
         >
-          <option value="technician">
+          <option value="TECHNICIAN">
             Technician (default)
           </option>
-          <option value="admin">Admin</option>
-          <option value="manager">Manager</option>
+          <option value="ADMIN">Admin</option>
+          <option value="USER">User</option>
         </select>
 
-        {/* Password */}
         <input
           type="password"
           className="w-full border p-2"
@@ -103,7 +90,6 @@ export default function SignupPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {/* Confirm Password */}
         <input
           type="password"
           className="w-full border p-2"

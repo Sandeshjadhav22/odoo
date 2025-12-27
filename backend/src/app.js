@@ -8,7 +8,9 @@ import userRoutes from "./routes/user.routes.js";
 import { requireAuth, restrictTo } from "./middleware/auth.middleware.js";
 import equipmentCategoryRoutes from "./routes/equipmentCategory.routes.js";
 import equipmentRoutes from "./routes/equipment.routes.js";
+import dotenv from "dotenv";
 import maintenanceRequestRoutes from "./routes/maintenanceRequest.routes.js";
+dotenv.config();
 const app = express();
 
 // Middlewares
@@ -39,15 +41,11 @@ app.get("/protected", requireAuth, (req, res) => {
 });
 
 // 🔐 Admin-only example
-app.get(
-  "/admin",
-  requireAuth,
-  restrictTo("ADMIN"),
-  (req, res) => {
-    res.json({ message: "Welcome Admin" });
-  }
-);
+app.get("/admin", requireAuth, restrictTo("ADMIN"), (req, res) => {
+  res.json({ message: "Welcome Admin" });
+});
 
+app.use("/teams", teamRoutes);
 
 
 // Health check
