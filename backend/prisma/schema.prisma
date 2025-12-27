@@ -132,6 +132,26 @@ model MaintenanceRequest {
   // Company (simple string, as decided)
   company String
 
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  workCenter   WorkCenter? @relation(fields: [workCenterId], references: [id])
+  workCenterId Int?
+}
+
+model WorkCenter {
+  id          Int     @id @default(autoincrement())
+  name        String
+  code        String?
+  tag         String?
+  costPerHour Float?
+  capacity    Float?
+  efficiency  Float?
+  oeeTarget   Float?
+  company     String?
+
+  // ✅ ADD THIS
+  maintenanceRequests MaintenanceRequest[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

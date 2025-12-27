@@ -11,6 +11,7 @@ import equipmentRoutes from "./routes/equipment.routes.js";
 import dotenv from "dotenv";
 import maintenanceRequestRoutes from "./routes/maintenanceRequest.routes.js";
 dotenv.config();
+import workCenterRoutes from "./routes/workCenter.routes.js"
 const app = express();
 
 // Middlewares
@@ -46,6 +47,7 @@ app.get("/admin", requireAuth, restrictTo("ADMIN"), (req, res) => {
 });
 
 app.use("/teams", teamRoutes);
+app.use("/api/work-centers", workCenterRoutes);
 
 
 // Health check

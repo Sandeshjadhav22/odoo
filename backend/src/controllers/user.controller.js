@@ -1,9 +1,6 @@
 import prisma from "../models/prisma.js";
 
-/**
- * Get all users
- * GET /users
- */
+
 export const getAllUsers = async (req, res) => {
   try {
     const users = await prisma.user.findMany({
@@ -33,10 +30,7 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-/**
- * Get single user
- * GET /users/:id
- */
+
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
